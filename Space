@@ -1,0 +1,28 @@
+local HumanoidRootParts = game.Players:GetPlayers():GetChildren():Filter(HumanoidRootPart)
+local Camera = game.Players.LocalPlayer.Camera
+
+local fov = 90
+local espEnabled = true
+
+for _, HumanoidRootPart in ipairs(HumanoidRootParts) do
+    local targetVector = HumanoidRootPart.Position - Camera.CFrame.Position
+    local angle = targetVector:AngleBetween(Camera.CFrame.LookVector)
+    if angle < fov and angle > -fov then
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, HumanoidRootPart.Position)
+
+        if espEnabled then
+            -- Create a new part to represent the ESP
+            local espPart = Instance.new("Part")
+            espPart.Parent = game.Workspace
+            espPart.Position = HumanoidRootPart.Position
+            espPart.Size = Vector3.new(1, 1, 1)
+            espPart.Transparency = 0.5
+            espPart.BrickColor = BrickColor.new("BrightGreen")
+
+            -- Destroy the ESP part after 1 second
+            local delay = 1
+            task.wait(delay)
+            espPart:Destroy()
+        end
+    end
+end
